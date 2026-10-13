@@ -59,7 +59,7 @@ jobs:
         with:
           name: binary-${{ matrix.os }}
           path: |
-            build/app
-            build/Release/app.exe
-            build/app.exe
+            build/dataconv
+            build/Release/dataconv.exe
+            build/dataconv.exe
           if-no-files-found: warn
