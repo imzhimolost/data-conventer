@@ -20,12 +20,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Trigger intentional error on Ubuntu
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          echo "fail-fast error"
-          exit 1
-
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -49,4 +43,23 @@ jobs:
         run: cmake --build build --config Release
 
       - name: Run tests
-        run: ctest --test-dir build --output-on-failure
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-log-${{ matrix.os }}
+          path: build/Testing/Temporary/LastTest.log
+          retention-days: 5
+
+      - name: Upload build binary
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.os }}
+          path: |
+            build/app
+            build/Release/app.exe
+            build/app.exe
+          if-no-files-found: warn
