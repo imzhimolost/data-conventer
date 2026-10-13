@@ -20,6 +20,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Trigger intentional error on Ubuntu
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          echo "fail-fast error"
+          exit 1
+
       - name: Install dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
